@@ -7,7 +7,10 @@ export default defineConfig({
 
   head: [
     ['link', { rel: 'icon', href: '/favicon.ico' }],
+    ['meta', { name: 'og:url', content: 'https://docs.zhigupu.com' }],
   ],
+
+  cleanUrls: true,
 
   themeConfig: {
     logo: '/logo.svg',

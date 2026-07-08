@@ -38,6 +38,8 @@ npm run preview
 
 ## Deployment
 
+**Live URL:** https://docs.zhigupu.com
+
 ### Cloudflare Pages
 
 1. Connect your GitHub repository to Cloudflare Pages
