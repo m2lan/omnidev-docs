@@ -1,6 +1,17 @@
 ---
 layout: home
 
+head:
+  - - script
+    - {}
+    - |
+      if (typeof window !== 'undefined') {
+        const lang = navigator.language || navigator.userLanguage
+        if (lang.startsWith('zh') && !window.location.pathname.startsWith('/zh')) {
+          window.location.href = '/zh/'
+        }
+      }
+
 hero:
   name: OmniDev
   text: AI Platform Documentation
