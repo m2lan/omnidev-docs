@@ -15,40 +15,6 @@ export default defineConfig({
     root: {
       label: 'English',
       lang: 'en',
-    },
-    zh: {
-      label: '简体中文',
-      lang: 'zh-CN',
-    },
-  },
-
-  head: [
-    ['link', { rel: 'icon', href: '/favicon.ico' }],
-    ['meta', { name: 'og:url', content: 'https://docs.zhigupu.com' }],
-  ],
-
-  themeConfig: {
-    logo: '/logo.svg',
-
-    socialLinks: [
-      { icon: 'github', link: 'https://github.com/m2lan' },
-    ],
-
-    footer: {
-      message: 'Released under the MIT License.',
-      copyright: 'Copyright © 2026-present OmniDev',
-    },
-
-    search: {
-      provider: 'local',
-    },
-  },
-})
-
-  locales: {
-    root: {
-      label: 'English',
-      lang: 'en',
       themeConfig: {
         nav: [
           { text: 'Home', link: '/' },
@@ -61,7 +27,6 @@ export default defineConfig({
           },
           { text: 'Guide', link: '/guide/' },
         ],
-
         sidebar: {
           '/platform/': [
             {
@@ -98,7 +63,6 @@ export default defineConfig({
             },
           ],
         },
-
         outline: {
           level: [2, 3],
           label: 'On this page',
@@ -120,7 +84,6 @@ export default defineConfig({
           },
           { text: '指南', link: '/zh/guide/' },
         ],
-
         sidebar: {
           '/zh/platform/': [
             {
@@ -157,7 +120,6 @@ export default defineConfig({
             },
           ],
         },
-
         outline: {
           level: [2, 3],
           label: '页面导航',
@@ -168,16 +130,13 @@ export default defineConfig({
 
   themeConfig: {
     logo: '/logo.svg',
-
     socialLinks: [
       { icon: 'github', link: 'https://github.com/m2lan' },
     ],
-
     footer: {
       message: 'Released under the MIT License.',
       copyright: 'Copyright © 2026-present OmniDev',
     },
-
     search: {
       provider: 'local',
     },
