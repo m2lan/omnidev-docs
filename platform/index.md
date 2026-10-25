@@ -1,37 +1,48 @@
 # OmniDev Platform
 
-All-in-One AI development platform integrating IDE, Agent, RAG, Workflow, Deploy, and more.
+**OmniDev — AI knowledge & coding workbench**: a team-oriented workbench for chat, retrieval-augmented knowledge, and background coding agents.
 
-## Overview
+## Working Features
 
-OmniDev Platform is a comprehensive AI development environment designed to streamline the entire development lifecycle. It combines multiple tools and services into a unified platform.
+### Chat
 
-## Key Features
+- OpenAI, DeepSeek, Qwen, and Anthropic models, with streaming and non-streaming responses
+- Conversation management, multimodal images, and image generation
+- Attachments stored in MinIO and parsed with Apache Tika
+- Per-user AI provider configurations (BYOK); keys are encrypted when `ENCRYPTION_KEY` is set
+- External MCP tools over streamable HTTP
 
-- **Integrated IDE** — Browser-based development environment
-- **AI Agent** — Intelligent coding assistant with context awareness
-- **RAG System** — Retrieval-Augmented Generation for code and documentation
-- **Workflow Engine** — Visual workflow builder powered by Temporal
-- **Deployment Pipeline** — One-click deployment to multiple environments
-- **Team Collaboration** — Real-time collaboration tools
+### Knowledge
+
+- Knowledge bases, document upload and Tika parsing, and configurable chunk size/overlap
+- OpenAI, Gemini, or Ollama embeddings with pgvector similarity search and Redis caching
+- RAG context injected into chat
+- Embedding dimensions are stored per knowledge base and follow its embedding model
+
+The gateway embeds the `knowledge-engine` Go module. The same engine is also available separately as an HTTP API and MCP server.
+
+### Background Agents
+
+- User-defined agents with a system prompt, maximum steps, and selected tools
+- Asynchronous, persistent runs with a plan → think/tool call/code execution → response loop
+- Workspace file operations and search, calculator, and code execution tools
+- Python, JavaScript/Node.js, Go, and shell execution in isolated, resource-limited Docker containers
+- Run polling and cancellation through the real HTTP API
+
+Pull-request delivery is planned, not implemented.
 
 ## Tech Stack
 
 | Layer | Technology |
 |-------|------------|
-| Backend | Go 1.22+ / Gin / gRPC / Wire |
-| Frontend | Next.js 15 / React 19 / Tailwind / Shadcn/ui |
-| Database | PostgreSQL 16 + pgvector / Redis 7 / Kafka |
-| Storage | MinIO (S3-compatible) |
-| Search | Elasticsearch 8 |
-| Workflow | Temporal |
-| Infra | Docker / Kubernetes / Helm |
-| Observability | Prometheus / Grafana / Loki / Jaeger |
+| Backend | One Go 1.22+ binary in `apps/gateway` (Gin) |
+| Frontend | Next.js 15 / React 19 in `apps/web` |
+| Data | PostgreSQL 16 + pgvector / Redis 7 |
+| Files and parsing | MinIO / Apache Tika |
+| Agent runtime | Throwaway Docker containers |
 
-## Quick Start
+## Scope
 
-See [Getting Started](/platform/getting-started) for installation and setup instructions.
+OmniDev is a modular monolith, not a 16-microservice platform. It does not include an online IDE, visual workflow canvas, billing or subscriptions, one-click deployment, a notification service, or a bundled Prometheus/Grafana/Loki/Jaeger stack. Kafka, Elasticsearch, Temporal, Kubernetes, and Helm are not part of the current architecture.
 
-## Architecture
-
-See [Architecture](/platform/architecture) for system design and component overview.
+See [Getting Started](/platform/getting-started), [Architecture](/platform/architecture), and [API Reference](/platform/api).

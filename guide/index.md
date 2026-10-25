@@ -1,36 +1,29 @@
 # Guide
 
-Welcome to the OmniDev documentation hub. This guide provides an overview of all projects and how to get started.
+Welcome to the documentation for **OmniDev — AI knowledge & coding workbench**.
 
-## Projects
+## OmniDev Platform
 
-### OmniDev Platform
+A modular monolith for multi-model chat, document-grounded knowledge, and sandboxed background agents.
 
-The flagship product — an all-in-one AI development platform integrating IDE, Agent, RAG, Workflow, Deploy, and more.
-
-- [Overview](/platform/) — Platform features and capabilities
-- [Getting Started](/platform/getting-started) — Installation and setup
-- [Architecture](/platform/architecture) — System design
+- [Overview](/platform/) — Current features and product boundaries
+- [Getting Started](/platform/getting-started) — Local setup and checks
+- [Architecture](/platform/architecture) — Gateway, embedded knowledge engine, and agent sandboxes
 - [Configuration](/platform/configuration) — Environment variables
-- [Deployment](/platform/deployment) — Docker, K8s deployment
-- [API Reference](/platform/api) — REST API documentation
+- [Deployment](/platform/deployment) — Docker Compose deployment
+- [API Reference](/platform/api) — Chat, knowledge, and agent HTTP APIs
 
-### Knowledge Engine
+## Knowledge Engine
 
-A pluggable, embeddable knowledge engine for RAG applications.
+The RAG module embedded in OmniDev, also available independently as an HTTP API and MCP server.
 
 - [Overview](/knowledge-engine/) — Engine features and capabilities
-- [Getting Started](/knowledge-engine/getting-started) — Installation and setup
+- [Getting Started](/knowledge-engine/getting-started) — Standalone installation and setup
 - [Configuration](/knowledge-engine/configuration) — Environment variables
-- [Adapters](/knowledge-engine/adapters) — Pluggable adapter system
-- [Deployment](/knowledge-engine/deployment) — Docker, K8s deployment
+- [MCP Server](/knowledge-engine/mcp) — MCP integration
+- [Adapters](/knowledge-engine/adapters) — Pluggable adapters
+- [Deployment](/knowledge-engine/deployment) — Standalone Docker deployment
 
-## Getting Help
+## First Steps
 
-- **GitHub Issues** — Report bugs or request features
-- **Discussions** — Ask questions and share ideas
-- **Discord** — Join the community
-
-## Contributing
-
-We welcome contributions! See the contributing guide in each project's repository.
+For the complete workbench, clone `omnidev` and `knowledge-engine` side by side, then follow [Getting Started](/platform/getting-started). Use the standalone Knowledge Engine guide only when you want the engine without the OmniDev gateway and web UI.

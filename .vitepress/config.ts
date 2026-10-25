@@ -2,7 +2,7 @@ import { defineConfig } from 'vitepress'
 
 export default defineConfig({
   title: 'OmniDev',
-  description: 'OmniDev AI Platform Documentation Hub',
+  description: 'OmniDev AI knowledge & coding workbench documentation',
 
   head: [
     ['link', { rel: 'icon', href: '/favicon.ico' }],

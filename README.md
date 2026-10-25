@@ -4,8 +4,8 @@ Centralized documentation for all OmniDev projects, deployed on Cloudflare Pages
 
 ## Projects
 
-- **OmniDev Platform** — All-in-One AI development platform
-- **Knowledge Engine** — Pluggable knowledge engine for RAG applications
+- **OmniDev Platform** — AI knowledge & coding workbench for chat, RAG, and background agents
+- **Knowledge Engine** — Embedded or standalone knowledge engine for RAG applications and MCP clients
 
 ## Development
 

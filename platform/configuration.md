@@ -1,88 +1,83 @@
 # Configuration
 
-## Environment Variables
+Configuration uses environment variables. Copy `.env.example` to `.env`; the values below are the development defaults from that file.
 
-### Server
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `SERVER_PORT` | `8080` | HTTP server port |
-| `SERVER_HOST` | `0.0.0.0` | HTTP server host |
-| `GIN_MODE` | `debug` | Gin mode (debug/release) |
-
-### Database
+## Application and Data
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `DB_HOST` | `localhost` | PostgreSQL host |
-| `DB_PORT` | `5432` | PostgreSQL port |
-| `DB_USER` | `postgres` | PostgreSQL user |
-| `DB_PASSWORD` | — | PostgreSQL password |
-| `DB_NAME` | `omnidev` | Database name |
+| `APP_PORT` | `9090` | Gateway HTTP port |
+| `DB_HOST`, `DB_PORT` | `localhost`, `5432` | PostgreSQL connection |
+| `DB_USER`, `DB_PASSWORD`, `DB_NAME` | `omnidev`, `omnidev`, `omnidev` | PostgreSQL credentials and database |
+| `DB_SSLMODE` | `disable` | PostgreSQL SSL mode |
+| `REDIS_HOST`, `REDIS_PORT` | `localhost`, `6379` | Redis connection |
+| `REDIS_PASSWORD`, `REDIS_DB` | empty, `0` | Redis authentication and database |
+| `JWT_SECRET` | development value | JWT signing secret; replace it outside local development |
+| `MINIO_ENDPOINT` | `localhost:9000` | Attachment storage endpoint; omit MinIO settings to disable uploads |
+| `MINIO_ACCESS_KEY`, `MINIO_SECRET_KEY` | `minioadmin` | MinIO credentials |
+| `MINIO_USE_SSL` | `false` | Use TLS for MinIO |
+| `TIKA_ENDPOINT` | `http://localhost:9998` | Tika parser for attachments and knowledge documents |
+| `TIKA_TIMEOUT` | `30` | Parser timeout in seconds |
 
-### Redis
+OAuth is optional and uses the `GITHUB_*` and `GOOGLE_*` variables in `.env.example`.
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `REDIS_HOST` | `localhost` | Redis host |
-| `REDIS_PORT` | `6379` | Redis port |
-| `REDIS_PASSWORD` | — | Redis password |
+## AI Providers
 
-### LLM Providers
+| Variable | Description |
+|----------|-------------|
+| `OPENAI_API_KEY`, `OPENAI_BASE_URL`, `OPENAI_MODELS` | OpenAI or OpenAI-compatible provider settings |
+| `DEEPSEEK_API_KEY`, `DEEPSEEK_MODELS` | DeepSeek settings |
+| `QWEN_API_KEY` | Qwen provider key |
+| `ANTHROPIC_API_KEY` | Anthropic provider key |
+| `AI_DEFAULT_MODEL` | Default chat model (`deepseek-chat` in the example) |
+| `ENCRYPTION_KEY` | Encrypts per-user BYOK provider keys when set |
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `OPENAI_API_KEY` | — | OpenAI API key |
-| `OPENAI_BASE_URL` | `https://api.openai.com/v1` | OpenAI API base URL |
-| `ANTHROPIC_API_KEY` | — | Anthropic API key |
+Only providers with keys are registered. Users can also manage their own provider configurations through the web UI and `/user/ai-configs` API.
 
-### Embedding
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `RAG_EMBEDDING_PROVIDER` | `openai` | Embedding provider (openai/gemini/ollama) |
-| `RAG_EMBEDDING_MODEL` | model default | Embedding model name |
-| `RAG_EMBEDDING_API_KEY` | — | Embedding API key (falls back to the provider key) |
-| `RAG_EMBEDDING_BASE_URL` | — | Custom embedding endpoint |
-
-### Knowledge Engine (Gateway)
-
-The gateway embeds `knowledge-engine` in-process. The engine runs with noop auth because gateway
-middleware has already authenticated the request.
+## Knowledge and RAG
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `KNOWLEDGE_STORAGE_TYPE` | `minio` when MinIO is configured, else `local` | Document storage backend |
-| `KNOWLEDGE_BUCKET` | `rag-documents` | MinIO/S3 bucket |
-| `KNOWLEDGE_LOCAL_PATH` | `./data/knowledge` | Local storage path |
-| `KNOWLEDGE_PARSER_TYPE` | `tika` | `tika` or `native` |
-| `KNOWLEDGE_CACHE_TTL` | `60s` | Search result cache TTL |
-| `KNOWLEDGE_EMBEDDING_DIMENSIONS` | model default | Expected embedding size |
+| `RAG_EMBEDDING_PROVIDER` | `openai` | `openai`, `gemini`, or `ollama` |
+| `RAG_EMBEDDING_MODEL` | `text-embedding-3-small` | Embedding model |
+| `RAG_EMBEDDING_API_KEY` | empty | Embedding provider key |
+| `RAG_EMBEDDING_BASE_URL` | empty | Custom embedding endpoint |
+| `KNOWLEDGE_STORAGE_TYPE` | `local` | `local` or `minio` |
+| `KNOWLEDGE_LOCAL_PATH` | `./data/knowledge` | Local document directory |
+| `KNOWLEDGE_BUCKET` | `knowledge` | MinIO bucket |
+| `KNOWLEDGE_PARSER_TYPE` | `tika` | Document parser |
+| `KNOWLEDGE_CACHE_TTL` | `10m` | Search cache TTL |
+| `KNOWLEDGE_EMBEDDING_DIMENSIONS` | `0` | `0` infers dimensions from the model response |
 
-`TIKA_ENDPOINT` and `TIKA_TIMEOUT` configure the parser. PostgreSQL must have the `vector`
-extension available.
+Dimensions are tracked per knowledge base. PostgreSQL must provide the `vector` extension.
 
-### Chat Service — External MCP Tools
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `MCP_ENABLED` | `false` | Enable tool calling through external MCP servers |
-| `MCP_SERVERS` | — | JSON array of MCP servers (see below) |
+## External MCP Tools
 
 ```bash
 MCP_ENABLED=true
-MCP_SERVERS='[{"name":"knowledge","url":"http://knowledge-engine:8083/mcp","api_key":"","timeout_seconds":30}]'
+MCP_SERVERS='[{"name":"knowledge","url":"http://localhost:9100/mcp","api_key":"","timeout_seconds":15,"headers":{}}]'
 ```
 
-Each server entry supports `name`, `url`, `api_key`, `timeout_seconds`, and `headers`. The chat
-service initializes each server, lists its tools, and lets the model call them. A server that fails
-to initialize is logged and skipped so chat keeps working.
+`MCP_SERVERS` is a JSON array whose entries support `name`, `url`, `api_key`, `timeout_seconds`, and `headers`. The gateway uses streamable HTTP JSON-RPC 2.0. A server that cannot initialize is logged and skipped.
 
-## Configuration File
+Chat runs at most five tool rounds and truncates each tool output to 8000 runes. Used tool names appear in message metadata as `tools_used`. MCP function calling currently applies to OpenAI, DeepSeek, and Qwen; it is not yet available for Anthropic models.
 
-You can also use a `.env` file in the project root:
+## Background Agent Sandbox
 
-```bash
-cp .env.example .env
-# Edit .env with your values
-```
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `SANDBOX_ENABLED` | `true` | Register agent routes when Docker is available |
+| `SANDBOX_WORKSPACE_ROOT` | `./data/agent-workspaces` | Gateway-side workspace root |
+| `SANDBOX_HOST_WORKSPACE_ROOT` | empty | Host path of that same directory when the gateway runs in Docker |
+| `SANDBOX_NETWORK` | `none` | Sandbox container network |
+| `SANDBOX_CPU_LIMIT` | `1` | CPU limit |
+| `SANDBOX_MEMORY_LIMIT` | `512m` | Memory limit |
+| `SANDBOX_TIMEOUT` | `120s` | Code execution timeout |
+| `SANDBOX_PYTHON_IMAGE` | `python:3.12-alpine` | Python runtime |
+| `SANDBOX_NODE_IMAGE` | `node:22-alpine` | JavaScript/Node.js runtime |
+| `SANDBOX_GO_IMAGE` | `golang:1.22-alpine` | Go runtime |
+| `SANDBOX_SHELL_IMAGE` | `alpine:3.19` | Shell runtime |
+| `AGENT_MODEL` | `gpt-4o-mini` | Planner model |
+| `AGENT_BASE_URL`, `AGENT_API_KEY` | empty | Planner endpoint and key; fall back to `OPENAI_*` |
+
+Run `make sandbox-images` to pre-pull the runtime images. When the gateway is containerized, `/var/run/docker.sock` must be mounted and `SANDBOX_HOST_WORKSPACE_ROOT` must be a host path, not a path inside the gateway container.

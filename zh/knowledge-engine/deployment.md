@@ -31,24 +31,6 @@ docker-compose -f deploy/docker/docker-compose.yml up -d
 - Redis
 - 知识引擎
 
-## Kubernetes
-
-### 使用 Helm
-
-```bash
-helm repo add omnidev https://charts.omnidev.dev
-helm install knowledge-engine m2lan/knowledge-engine \
-  --namespace knowledge-engine \
-  --create-namespace \
-  --values values.yaml
-```
-
-### 手动部署
-
-```bash
-kubectl apply -f deploy/k8s/
-```
-
 ## 生产环境变量
 
 ```bash
@@ -89,16 +71,4 @@ GIN_MODE=release
 
 ```bash
 curl http://localhost:8083/health
-```
-
-## 监控
-
-知识引擎在 `/metrics` 端点暴露 Prometheus 指标。
-
-```yaml
-# prometheus.yml
-scrape_configs:
-  - job_name: 'knowledge-engine'
-    static_configs:
-      - targets: ['knowledge-engine:8083']
 ```

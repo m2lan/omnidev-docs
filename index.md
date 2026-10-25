@@ -14,28 +14,28 @@ head:
 
 hero:
   name: OmniDev
-  text: AI Platform Documentation
-  tagline: Comprehensive documentation for all OmniDev projects
+  text: AI Knowledge & Coding Workbench
+  tagline: Documentation for multi-model chat, RAG knowledge, and sandboxed background agents
   actions:
     - theme: brand
       text: Get Started
       link: /guide/
     - theme: alt
-      text: View Projects
+      text: View Platform
       link: /platform/
 
 features:
   - icon: 🚀
     title: OmniDev Platform
-    details: All-in-One AI development platform integrating IDE, Agent, RAG, Workflow, Deploy, and more.
+    details: A modular monolith for multi-model chat, document-grounded knowledge, and background coding agents.
     link: /platform/
   - icon: 🧠
     title: Knowledge Engine
-    details: Pluggable knowledge base engine for RAG applications with multi-source adapter support.
+    details: Embedded in OmniDev or available standalone as an HTTP API and MCP server.
     link: /knowledge-engine/
   - icon: 📖
-    title: Comprehensive Docs
-    details: Detailed guides, API references, and deployment instructions for every project.
+    title: Practical Guides
+    details: Current setup, configuration, Docker Compose deployment, and real HTTP API references.
     link: /guide/
 ---
 
@@ -44,12 +44,12 @@ features:
 <div class="projects-grid">
 
 ### OmniDev Platform
-The flagship product — an all-in-one AI development platform.
+An AI knowledge & coding workbench for teams, with chat, RAG, and isolated background agents.
 
 [Learn more →](/platform/)
 
 ### Knowledge Engine
-A standalone, pluggable knowledge base engine for RAG applications.
+The embedded knowledge module, also available independently for RAG applications and MCP clients.
 
 [Learn more →](/knowledge-engine/)
 
