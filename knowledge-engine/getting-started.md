@@ -3,8 +3,9 @@
 ## Prerequisites
 
 - Go 1.22+
-- PostgreSQL 16 with pgvector extension
-- Redis 7
+- PostgreSQL 16 with pgvector (`pgvector/pgvector:pg16`)
+- Redis 7 (optional — in-memory cache is used if absent)
+- Apache Tika (optional for plain text; required for PDF/DOCX/PPTX/XLSX)
 
 ## Installation
 
@@ -18,12 +19,19 @@ cd knowledge-engine
 # Set your embedding API key
 export EMBEDDING_API_KEY=sk-...
 
-# Start all services
+# Start everything: PostgreSQL + pgvector, Redis, Apache Tika, Knowledge Engine
 docker-compose -f deploy/docker/docker-compose.yml up -d
 
-# Verify it's running
+# Verify it's running (no-auth trial mode)
 curl http://localhost:8083/health
+curl -X POST http://localhost:8083/api/v1/knowledge \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Product Documentation"}'
 ```
+
+Migrations run automatically; do not apply SQL manually. To enable authentication, set
+`AUTH_TYPE=apikey` with `API_KEY=<secret>` (or `AUTH_TYPE=jwt` with `JWT_SECRET=<secret>`)
+and send the matching header on every API call.
 
 ### 2. Go SDK
 
@@ -35,7 +43,7 @@ import (
     "fmt"
     "os"
 
-    knowledge "github.com/m2lan/knowledge-engine"
+    knowledge "github.com/omnidev/knowledge-engine"
 )
 
 func main() {
@@ -58,10 +66,12 @@ func main() {
         Name: "Product Documentation",
     })
 
-    // Upload a document
+    // Upload a document (processed asynchronously)
     file, _ := os.Open("manual.pdf")
     defer file.Close()
-    doc, _ := engine.UploadDocument(ctx, "user-id", kb.ID.String(), "manual.pdf", fileSize, file)
+    info, _ := file.Stat()
+    doc, _ := engine.UploadDocument(ctx, "user-id", kb.ID.String(), "manual.pdf", info.Size(), file)
+    _ = doc // poll the document until status is ready/failed
 
     // Search
     results, _ := engine.Search(ctx, "user-id", kb.ID.String(), "how to reset password", 5)
@@ -74,7 +84,7 @@ func main() {
 ### 3. Embed into Existing Go Application
 
 ```go
-import knowledge "github.com/m2lan/knowledge-engine"
+import knowledge "github.com/omnidev/knowledge-engine"
 
 // Initialize engine
 engine, _ := knowledge.New(knowledge.Config{

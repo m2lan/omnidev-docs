@@ -8,12 +8,14 @@ Knowledge Engine is a standalone service designed to be integrated into any proj
 
 ## Key Features
 
-- **Hybrid Search** — Vector similarity (pgvector) + BM25 full-text search, merged via Reciprocal Rank Fusion (RRF)
+- **Hybrid Search** — Vector similarity (pgvector) + BM25 full-text search, merged via Reciprocal Rank Fusion (RRF), normalized to `0..1`
 - **Chinese Support** — Runtime zhparser detection for Chinese full-text search
-- **Multi-format Parsing** — PDF, DOCX, PPTX, XLSX, CSV, HTML, JSON, and source code
+- **Multi-format Parsing** — PDF, DOCX, PPTX, XLSX, CSV, HTML, JSON, and source code via Apache Tika, with native plain-text fallback
+- **Automatic Migrations** — Embedded SQL migrations run on startup; existing volumes upgrade in place
+- **Dynamic Embedding Dimensions** — One database serves 1536-dim OpenAI and 768-dim Gemini/Ollama models
 - **Pluggable Embedding** — OpenAI, Gemini, Ollama (OpenAI-compatible)
 - **Pluggable Storage** — Local filesystem, MinIO/S3
-- **Pluggable Auth** — JWT, no-op (development)
+- **Pluggable Auth** — JWT, static API key, no-op (development)
 - **Industry Templates** — Configurable metadata schemas per industry
 - **RBAC Permissions** — User, team, and organization-level access control
 
@@ -28,7 +30,7 @@ Knowledge Engine is a standalone service designed to be integrated into any proj
 │  HTTP (chi) │  KB Service │  Chunker     │  DB: PostgreSQL  │
 │  gRPC (WIP) │  Search Svc │  Parser      │  Cache: Redis    │
 │  SDK (Go)   │  Perm Svc   │  Embedder    │  Storage: MinIO  │
-│             │             │  Retriever   │  Auth: JWT       │
+│             │             │  Retriever   │  Auth: JWT/Key   │
 ├─────────────┴─────────────┴──────────────┴──────────────────┤
 │                       Domain Layer                           │
 │  KnowledgeBase · Document · Chunk · Permission · Template    │
